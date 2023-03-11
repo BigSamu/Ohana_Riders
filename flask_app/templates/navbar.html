@@ -1,0 +1,40 @@
+
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container">
+    <span class="navbar-brand ml-2 mb-0 h1">Ohana Rideshares</span>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Links and Buttons of Navigation panel-->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-2 ml-md-auto">
+        <!-- <p class="text-white">{{request.path}}</p> -->
+        {% if session %}
+          {% if request.path != "/" and request.path != "/rides/dashboard" %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/rides/dashboard"><u>Dashboard</u></a>
+          </li>
+          {% endif %} {% if request.path == '/rides/dashboard'%}
+          <li class="nav-item">
+            <a class="nav-link active" href="/rides/new"><u>Request a Ride</u></a>
+          </li>
+          {% endif %}
+
+          <li class="nav-item">
+            <a class="nav-link active" href="/logout"><u>Log Out</u></a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

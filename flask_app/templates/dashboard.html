@@ -1,0 +1,85 @@
+{% extends "base.html" %} 
+
+{% block title %} Dashboard {% endblock%}
+
+{% block content %}
+<h3 class="font-weight-bold">Welcome {{rider.first_name}} {{rider.last_name}}!!!</h3>
+
+<hr class="border border-black border-4" />
+
+<div class="row justify-content-around">
+  <!-- 2.1) Rideshare Requests -->
+  <div class="col-10 col-md-5 bg-dark text-light p-3">
+    <h3 class="text-center">Rideshare Requests</h3>
+    <hr class="bg-warning" />
+
+    {% for ride in rides_without_driver %}
+      <div class="p-2 border border-round border-light mb-4 {% if(session.user_id == ride.rider_id) %} alert-warning {%else%} bg-dark {%endif%}">
+        <table class="table table-borderless mb-0 {% if(session.user_id == ride.rider_id) %} text-dark {%else%} text-white{%endif%}">
+          <tbody>
+            <tr>
+              <td class="p-0">Rider:</td>
+              <td class="p-0">{{ride.rider}}</td>
+            </tr>
+            <tr>
+              <td class="p-0">Destination:</td>
+              <td class="p-0">{{ride.destination}}</td>
+            </tr>
+            <tr>
+              <td class="p-0">When:</td>
+              <td class="p-0">{{ride.rideshare_date}}</td>
+            </tr>
+          </tbody>
+        </table>
+        {% if session.user_id == ride.rider_id %}
+          <div class="d-flex justify-content-end">
+            <a href="/rides/{{ride.id}}/delete" class="btn btn-link p-0"><u>Delete</u></a>
+          </div>
+        {% else %}
+          <div class="d-flex justify-content-end">
+            <a href="/rides/{{ride.id}}/add_driver/{{session.user_id}}" class="btn btn-link p-0 mx-2"><u>I can drive!</u></a>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- 2.2) Booked Rideshares -->
+  <div class="col-10 col-md-5 bg-dark text-light p-3 mt-4 mt-md-0">
+    <h3 class="text-center">Booked Rideshares</h3>
+    <hr class="bg-warning" />
+    {% for ride in rides_with_driver %} 
+      <div class="border border-round border-light mb-4">
+        {% if session.user_id == ride.driver_id %}
+          <div class="p-2 alert-warning text-dark">
+            <p><strong>You</strong> are driving <strong>{{ride.rider}}</strong> 
+              to {{ride.destination}} on {{ride.rideshare_date.strftime('%b %d')}}</p>
+            <div class="d-flex justify-content-end">
+              <a href="/rides/{{ride.id}}" class="btn btn-link p-0 mx-2"><u>Details</u></a>
+              |
+              <a href="/rides/{{ride.id}}/cancel_driver" class="btn btn-link p-0 mx-2"><u>Cancel</u></a>
+            </div>
+          </div>
+        {% elif session.user_id == ride.rider_id %}
+          <div class="p-2 alert-warning text-dark">
+            <p><strong>{{ride.driver}}</strong> is driving <strong> You </strong> 
+              to {{ride.destination}} on {{ride.rideshare_date.strftime('%b %d')}}</p>
+            <div class="d-flex justify-content-end">
+              <a href="/rides/{{ride.id}}" class="btn btn-link p-0 mx-2"><u>Details</u></a>
+            </div>
+          </div>
+        {% else %}
+          <div class="p-2 bg-dark text-white">
+            <p>
+              <strong>{{ride.driver}}</strong> is drving 
+              <strong>{{ride.rider}}</strong> 
+              to {{ride.destination}} on {{ride.rideshare_date.strftime('%b %d')}}</p>
+          </div>
+        {% endif %}
+      </div>
+    
+    {% endfor %}
+      
+  </div>
+</div>
+{% endblock %}

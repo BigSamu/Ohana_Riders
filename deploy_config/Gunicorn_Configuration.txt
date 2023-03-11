@@ -1,0 +1,11 @@
+[Unit]
+Description=Gunicorn instance
+After=network.target
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/Ohana_Riders
+Environment="PATH=/home/ubuntu/Ohana_Riders/venv/bin"
+ExecStart=/home/ubuntu/Ohana_Riders/venv/bin/gunicorn --workers 3 --bind unix:ohana_riders.sock -m 007 wsgi:application
+[Install]
+WantedBy=multi-user.target

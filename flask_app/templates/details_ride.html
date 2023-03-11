@@ -1,0 +1,118 @@
+{% extends "base.html" %} 
+
+{% block title %} Ride Details {% endblock%} 
+
+{% block content %}
+<div class="border border-2 border-dark p-4">
+    <h3><strong> Ready for your trip to the {{ride.destination}}</strong></h3>
+    <div class="my-2">
+      <table class="table table-table-borderless text-left">
+        <tbody class="mx-3">
+          <tr >
+            <td class="col-4 col-lg-2 p-0 border-0">Who's driving?</td>
+            <td class="col-8 col-lg-10 p-0 border-0">{% if session.user_id == ride.driver_id %} You {% else %} {{ride.driver}} {% endif %}</td>
+          </tr>
+          <tr>
+            <td class="p-0 border-0">Who's coming along?</td>
+            <td class="p-0 border-0">{% if session.user_id == ride.rider_id %} You {% else %} {{ride.rider}} {% endif %}</td>
+          </tr>
+          <tr>
+            <td class="p-0 border-0">Date:</td>
+            <td class="p-0 border-0">{{ride.rideshare_date.strftime('%b, %d')}}</td>
+          </tr>
+          <tr>
+            <td class="p-0 border-0">Pick-up Location:</td>
+            <td class="p-0 border-0">{{ride.pick_up_location}}</td>
+          </tr>
+          <tr>
+            <td class="border-0 p-0">Details:</td>
+            <td class="border-0 p-0">{{ride.details}}</td>
+          </tr>
+        </tbody>
+      </table>
+      {% if session.user_id == ride.rider_id %}
+        <div class="mt-3">
+          <a href="/rides/{{ride.id}}/edit" class="btn btn-link p-0 mx-1"><u>Edit</u></a>
+          |
+          <a href="/rides/{{ride.id}}/delete" class="btn btn-link p-0 mx-1"><u>Delete</u></a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+<!-- SENSEI BONUS  -->
+<hr>
+
+<div>
+  <h3><strong> Ride messages</strong></h3>
+  <div class="my-2">
+    <table class="table table-table-borderless text-left">
+      <tbody class="mx-3">
+        {% for message in messages%}
+        <tr >
+          <td class="col-4 col-lg-2 p-0 border-0">{{message.user}}:</td>
+          <td class="col-8 col-lg-10 p-0 border-0">{{message.message}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+
+  <hr>
+
+  <!-- Error Messages -->
+  {% with messages = get_flashed_messages(category_filter=['message'])%} 
+    {% if messages %}
+      <ul class="alert alert-danger list-unstyled">
+        {% for message in messages %}
+          <li> - {{message}}</li>
+        {% endfor %}
+      </ul>
+    {% endif %} 
+  {% endwith %}
+
+
+  <form action="/messages/new" method="post">
+    
+    <!-- User Id (Hidden) -->
+    <input
+      hidden
+      type="text"
+      name="user_id"
+      id="user_id"
+      value={{session.user_id}}
+    />
+
+    <!-- Ride Id (Hidden) -->
+    <input
+      hidden
+      type="text"
+      name="ride_id"
+      id="ride_id"
+      value={{ride.id}}
+    />
+    
+    <!-- Message -->
+    <div class="form-group row">
+      <div class="col-12 col-lg-8">
+        <textarea
+          name="message"
+          id="message"
+          rows="3"
+          class="form-control"
+          placeholder="Write something here!"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-group row">
+      <div class="col-12 col-lg-8 d-flex justify-content-end">
+        <input type="submit" value="Send Message" class="btn btn-success px-5" />
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+
+sudo vim /etc/nginx/sites-available/ohana_riders
+
+server {
+    listen 80;
+    server_name 18.230.5.213;
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/ubuntu/Ohana_Riders/ohana_riders.sock;
+    }
+}
+
+
+sudo ln -s /etc/nginx/sites-available/ohana_riders /etc/nginx/sites-enabled
